@@ -7,55 +7,38 @@ import clsx from "clsx";
 import { getFarewellText } from "../utils";
 import { words } from "../words";
 import Confetti from "react-confetti";
+import useCountDownTimer from "./hooks/useCountDownTimer";
 
 const App = () => {
   //Static values
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const numGuessesLeft = languages.length - 1;
   const randomWord = words[Math.floor(Math.random() * words.length)];
-  const timeRef = useRef(null);
 
   // State values
   const [currentWord, setCurrentWord] = useState(randomWord);
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [showFarawell, setShowFarawell] = useState("");
-  const [timeRemaining, setTimeRemaining] = useState(60);
-  const [isTimerActive, setIsTimerActive] = useState(false);
   const [attempts, setAttempts] = useState(languages.length - 1);
+  const { timeRemaining, isTimerActive, startTimer, stopTimer, resetTimer } =
+    useCountDownTimer(60);
 
   //Derived values
-  const isTimeUp = timeRemaining === 0;
   const wrongGuestCount = guessedLetters.filter((l) => {
     return !currentWord.includes(l);
   }).length;
-
+  const isTimeUp = timeRemaining === 0;
   const isGameWon = currentWord
     .split("")
     .every((l) => guessedLetters.includes(l));
   const isGameLost = wrongGuestCount === languages.length - 1 || isTimeUp;
   const isGameOver = isGameWon || isGameLost;
 
-  // time counter on component mount after clicking the start button
   useEffect(() => {
-    if (!isTimerActive) return;
-    timeRef.current = setInterval(() => {
-      setTimeRemaining((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(timeRef.current);
-  }, [isTimerActive]);
-
-  useEffect(() => {
-    if (timeRemaining <= 0 || isGameOver) {
-      clearInterval(timeRef.current);
-      setIsTimerActive(false);
+    if (isGameOver) {
+      stopTimer();
     }
-  }, [timeRemaining, isGameOver]);
-
-  const startGame = () => {
-    setTimeRemaining(60);
-    setIsTimerActive(true);
-  };
+  }, [isGameOver, stopTimer]);
 
   const addGuessedLetter = (letter) => {
     if (!guessedLetters.includes(letter)) {
@@ -116,7 +99,7 @@ const App = () => {
         key={letter}
         value={letter}
         onClick={() => addGuessedLetter(letter)}
-        disabled={isGameOver}
+        disabled={!isTimerActive || isGameOver}
         aria-disabled={guessedLetters.includes(letter)}
         aria-label={`Letter ${letter}`}
       >
@@ -129,8 +112,7 @@ const App = () => {
     setCurrentWord(randomWord);
     setGuessedLetters([]);
     setShowFarawell("");
-    setIsTimerActive(false);
-    setTimeRemaining(60);
+    resetTimer();
     setAttempts(languages.length - 1);
   };
   return (
@@ -170,12 +152,10 @@ const App = () => {
           New Game
         </button>
       ) : !isTimerActive ? (
-        <button className="start-game" onClick={startGame}>
+        <button className="start-game" onClick={startTimer}>
           Start
         </button>
-      ) : (
-        ""
-      )}
+      ) : null}
     </>
   );
 };
