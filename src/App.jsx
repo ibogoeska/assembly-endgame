@@ -121,7 +121,7 @@ const App = () => {
       <Hangman />
       <div className="timer">Time remaining: {timeRemaining}s</div>
       <div className="remaining-attempts">
-        You have <span>{attempts} </span> attempts more to try and guess the
+        You have <span>{attempts} </span> attempts left to try and guess the
         word
       </div>
       <Status
