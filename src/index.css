@@ -8,7 +8,7 @@ body {
   background-color: #262626;
   color: #d9d9d9;
   padding: 20px;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
 }
@@ -17,16 +17,22 @@ body {
   text-align: center;
 
   h1 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     font-weight: 500;
     color: #f9f4da;
   }
 
   p {
-    font-size: 0.875rem;
+    font-size: 1.1rem;
     max-width: 450px;
     color: #8e8e8e;
   }
+}
+
+.timer {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-block: 30px;
 }
 
 section.game-status {
@@ -48,8 +54,16 @@ section.game-status {
 
   div.game-lost {
     width: 100%;
-    background-color: red;
+    background-color: #ba2a2a;
     padding: 5px;
+    border-radius: 4px;
+  }
+
+  p.farawell-msg {
+    width: 100%;
+    background-color: #725ea7;
+    padding: 15px;
+    font-style: italic;
     border-radius: 4px;
   }
 
@@ -73,6 +87,7 @@ section.language-chips {
 }
 
 .language-chip {
+  font-weight: 500;
   border-radius: 3px;
   padding: 4.5px;
   position: relative;
@@ -99,7 +114,7 @@ section.language-chips {
   justify-content: center;
   gap: 3px;
 
-  span.letter {
+  span {
     height: 40px;
     width: 40px;
     background-color: #323232;
@@ -108,6 +123,10 @@ section.language-chips {
     align-items: center;
     font-size: 1.125rem;
     border-bottom: 1px solid #f9f4da;
+
+    .missed-letter {
+      color: #ba2a2a;
+    }
   }
 }
 
@@ -137,7 +156,37 @@ section.keyboard > button.wrong {
   background-color: #ec5d49;
 }
 
-button.new-game {
+section.keyboard > button:disabled {
+  cursor: auto;
+  opacity: 0.7;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.remaining-attempts {
+  text-align: center;
+  font-style: italic;
+  opacity: 0.5;
+  font-size: 1rem;
+  color: #10a958;
+
+  span {
+    font-weight: 700;
+  }
+}
+
+button.new-game,
+button.start-game {
   background-color: #11b5e5;
   border: 1px solid #d7d7d7;
   border-radius: 4px;
